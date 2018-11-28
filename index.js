@@ -62,7 +62,7 @@ const fileProcessWeb = (projectName) => {
         shell.cp('-Rf', `${rootPath}/master/angular-web-template/.editorconfig`, `${process.cwd()}/${projectName}`);
         shell.cp('-Rf', `${rootPath}/master/angular-web-template/.gitignore`, `${process.cwd()}/${projectName}`);
         shell.cd(`${process.cwd()}/${projectName}`);
-        shell.sed('-i', 'projectname', projectName, 'package.json');
+        shell.sed('-i', 'angular-web', projectName, 'package.json');
         resove();
     });
 };
