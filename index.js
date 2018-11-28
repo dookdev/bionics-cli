@@ -49,18 +49,22 @@ const createProject = async (projectName, projectType) => {
     if (projectType === 'Angular-web-template') {
         await fileProcessWeb(projectName);
         await excGit();
-        await excNPM();
+        // await excNPM();
         return path;
     } else if (projectType === 'Nodejs-server-template') {
         return;
     }
 };
 
-const fileProcessWeb = async (projectName) => {
-    shell.cp('-Rf', `${rootPath}/master/angular-web-template/*`, `${process.cwd()}/${projectName}`);
-    shell.cd(`${process.cwd()}/${projectName}`);
-    shell.sed('-i', 'projectname', projectName, 'package.json');
-    return;
+const fileProcessWeb = (projectName) => {
+    return new Promise((resove, reject) => {
+        shell.cp('-Rf', `${rootPath}/master/angular-web-template/*`, `${process.cwd()}/${projectName}`);
+        shell.cp('-Rf', `${rootPath}/master/angular-web-template/.editorconfig`, `${process.cwd()}/${projectName}`);
+        shell.cp('-Rf', `${rootPath}/master/angular-web-template/.gitignore`, `${process.cwd()}/${projectName}`);
+        shell.cd(`${process.cwd()}/${projectName}`);
+        shell.sed('-i', 'projectname', projectName, 'package.json');
+        resove();
+    });
 };
 
 const excGit = () => {
