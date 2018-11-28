@@ -1,11 +1,13 @@
 #!/usr/bin/env node
 
-const inquirer = require('inquirer');
-const chalk = require('chalk');
-const figlet = require('figlet');
-const shell = require('shelljs');
-const log = console.log;
-var packageJson = require('./package.json');
+const inquirer = require('inquirer'),
+    chalk = require('chalk'),
+    figlet = require('figlet'),
+    shell = require('shelljs'),
+    _path = require('path'),
+    log = console.log,
+    packageJson = require('./package.json'),
+    rootPath = _path.dirname(require.main.filename);
 
 const init = () => {
     log(
@@ -44,6 +46,14 @@ const askQuestions = () => {
 const createProject = (projectName, projectType) => {
     const path = `${process.cwd()}/${projectName}`;
     shell.mkdir('-p', path);
+    if (projectType === 'Angular-web-template') {
+        shell.cp('-Rf', `${rootPath}/master/angular-web-template`, `${process.cwd()}/${projectName}`);
+        shell.cd(`${process.cwd()}/${projectName}/angular-web-template`);
+        shell.sed('-i', 'projectname', projectName, 'package.json');
+        shell.cd(`${process.cwd()}/${projectName}`);
+    } else if (projectType === 'Nodejs-server-template') {
+
+    }
     return path;
 };
 
