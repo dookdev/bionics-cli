@@ -49,7 +49,7 @@ const createProject = async (projectName, projectType) => {
     if (projectType === 'Angular-web-template') {
         await fileProcessWeb(projectName);
         await excGit();
-        // await excNPM();
+        await excNPM();
         return path;
     } else if (projectType === 'Nodejs-server-template') {
         return;
