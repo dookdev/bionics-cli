@@ -43,18 +43,47 @@ const askQuestions = () => {
     return inquirer.prompt(questions);
 };
 
-const createProject = (projectName, projectType) => {
+const createProject = async (projectName, projectType) => {
     const path = `${process.cwd()}/${projectName}`;
     shell.mkdir('-p', path);
     if (projectType === 'Angular-web-template') {
-        shell.cp('-Rf', `${rootPath}/master/angular-web-template`, `${process.cwd()}/${projectName}`);
-        shell.cd(`${process.cwd()}/${projectName}/angular-web-template`);
-        shell.sed('-i', 'projectname', projectName, 'package.json');
+        shell.cp('-Rf', `${rootPath}/master/angular-web-template/*`, `${process.cwd()}/${projectName}`);
         shell.cd(`${process.cwd()}/${projectName}`);
+        shell.sed('-i', 'projectname', projectName, 'package.json');
+        await excGit();
+        return path;
     } else if (projectType === 'Nodejs-server-template') {
-
+        return;
     }
-    return path;
+};
+
+const excGit = () => {
+    return new Promise((resove, reject) => {
+        if (shell.exec('git init').code !== 0) {
+            log(chalk.red('Error: Git init failed'));
+            shell.exit(1);
+            reject();
+        } else {
+            if (shell.exec('git add -A').code !== 0) {
+                log(chalk.red('Error: Git add failed'));
+                shell.exit(1);
+                reject();
+            } else {
+                if (shell.exec('git commit -m "Auto-commit"').code !== 0) {
+                    log(chalk.red('Error: Git commit failed'));
+                    shell.exit(1);
+                    reject();
+                } else {
+                    log(chalk.green('success git init and Auto-commit'));
+                    resove();
+                }
+            }
+        }
+    });
+};
+
+const excNPM = () => {
+    shell.exec('npm install');
 };
 
 const success = path => {
@@ -68,7 +97,7 @@ const run = async () => {
     const answers = await askQuestions();
     const { PROJECTNAME, PROJECTTYPE } = answers;
     // create the file
-    const path = createProject(PROJECTNAME, PROJECTTYPE);
+    const path = await createProject(PROJECTNAME, PROJECTTYPE);
     // show success message
     success(path);
 };
