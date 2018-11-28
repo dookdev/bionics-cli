@@ -47,14 +47,20 @@ const createProject = async (projectName, projectType) => {
     const path = `${process.cwd()}/${projectName}`;
     shell.mkdir('-p', path);
     if (projectType === 'Angular-web-template') {
-        shell.cp('-Rf', `${rootPath}/master/angular-web-template/*`, `${process.cwd()}/${projectName}`);
-        shell.cd(`${process.cwd()}/${projectName}`);
-        shell.sed('-i', 'projectname', projectName, 'package.json');
+        await fileProcessWeb(projectName);
         await excGit();
+        await excNPM();
         return path;
     } else if (projectType === 'Nodejs-server-template') {
         return;
     }
+};
+
+const fileProcessWeb = async (projectName) => {
+    shell.cp('-Rf', `${rootPath}/master/angular-web-template/*`, `${process.cwd()}/${projectName}`);
+    shell.cd(`${process.cwd()}/${projectName}`);
+    shell.sed('-i', 'projectname', projectName, 'package.json');
+    return;
 };
 
 const excGit = () => {
@@ -74,7 +80,7 @@ const excGit = () => {
                     shell.exit(1);
                     reject();
                 } else {
-                    log(chalk.green('success git init and Auto-commit'));
+                    log(chalk.green('Success: git init and Auto-commit'));
                     resove();
                 }
             }
@@ -83,11 +89,28 @@ const excGit = () => {
 };
 
 const excNPM = () => {
-    shell.exec('npm install');
+    log(chalk.blue('Wainting...: npm install package.'));
+    return new Promise((resove, reject) => {
+        if (shell.exec('npm i').code !== 0) {
+            log(chalk.red('Error: npm i failed'));
+            shell.exit(1);
+            reject();
+        } else {
+            log(chalk.green('npm install success'));
+            if (shell.exec('code .').code !== 0) {
+                log(chalk.red('Error: code . failed to open Visual Studio Code'));
+                shell.exit(1);
+                reject();
+            } else {
+                log(chalk.green('Success'));
+                resove();
+            }
+        }
+    });
 };
 
 const success = path => {
-    log(chalk.green(`Done! created at ${path}`));
+    log(chalk.green(`Done! created Project at ${path}`));
 };
 
 const run = async () => {
