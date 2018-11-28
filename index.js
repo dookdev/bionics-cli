@@ -5,10 +5,11 @@ const chalk = require('chalk');
 const figlet = require('figlet');
 const shell = require('shelljs');
 const log = console.log;
+var packageJson = require('./package.json');
 
 const init = () => {
     log(
-        chalk.green(
+        chalk.rgb(64, 224, 208)(
             figlet.textSync('bionics cli', {
                 font: 'Ghost',
                 horizontalLayout: 'default',
@@ -16,37 +17,38 @@ const init = () => {
             })
         )
     );
-    log(chalk.blue.bold('version 1.0.0'));
+    log(chalk.green.bold('bionics cli version: ' + packageJson.version));
+    log(chalk.green.bold('Author: ' + packageJson.author));
 }
 
 const askQuestions = () => {
     const questions = [
         {
-            name: 'FILENAME',
+            name: 'PROJECTNAME',
             type: 'input',
-            message: 'What is the name of the file without extension?'
+            message: '[?] What is the project name?'
         },
         {
+            name: 'PROJECTTYPE',
             type: 'list',
-            name: 'EXTENSION',
-            message: 'What is the file extension?',
-            choices: ['.rb', '.js', '.php', '.css'],
+            message: '[?] What do you want project type?',
+            choices: ['Angular-web-template', 'Nodejs-server-template'],
             filter: function (val) {
-                return val.split('.')[1];
+                return val;
             }
         }
     ];
     return inquirer.prompt(questions);
 };
 
-const createFile = (filename, extension) => {
-    const filePath = `${process.cwd()}/${filename}.${extension}`
-    shell.touch(filePath);
-    return filePath;
+const createProject = (projectName, projectType) => {
+    const path = `${process.cwd()}/${projectName}`;
+    shell.mkdir('-p', path);
+    return path;
 };
 
-const success = filepath => {
-    log(chalk.green(`Done! File created at ${filepath}`));
+const success = path => {
+    log(chalk.green(`Done! created at ${path}`));
 };
 
 const run = async () => {
@@ -54,11 +56,11 @@ const run = async () => {
     init();
     // ask questions
     const answers = await askQuestions();
-    const { FILENAME, EXTENSION } = answers;
+    const { PROJECTNAME, PROJECTTYPE } = answers;
     // create the file
-    const filePath = createFile(FILENAME, EXTENSION);
+    const path = createProject(PROJECTNAME, PROJECTTYPE);
     // show success message
-    success(filePath);
+    success(path);
 };
 
 run();
