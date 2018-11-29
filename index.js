@@ -6,7 +6,7 @@ const inquirer = require('inquirer'),
     shell = require('shelljs'),
     _path = require('path'),
     log = console.log,
-    packageJson = require('./package.json'),
+    pkg = require('./package.json'),
     rootPath = _path.dirname(require.main.filename);
 
 const init = () => {
@@ -19,8 +19,8 @@ const init = () => {
             })
         )
     );
-    log(chalk.green.bold('bionics cli version: ' + packageJson.version));
-    log(chalk.green.bold('Author: ' + packageJson.author));
+    log(chalk.green.bold('bionics cli version: ' + pkg.version));
+    log(chalk.green.bold('Author: ' + pkg.author.name || pkg.author));
 }
 
 const askQuestions = () => {
@@ -28,16 +28,21 @@ const askQuestions = () => {
         {
             name: 'PROJECTNAME',
             type: 'input',
-            message: '[?] What is the project name?'
+            message: '[?] What is the project name?',
+            validate: function (input) {
+                const reg = new RegExp(/^([A-Za-z\-\_\d])+$/);
+                if (reg.test(input)) {
+                    return true;
+                } else {
+                    return '[!] A-Z a-z 0-9 _- only.';
+                }
+            }
         },
         {
             name: 'PROJECTTYPE',
             type: 'list',
             message: '[?] What do you want project type?',
-            choices: ['Angular-web-template', 'Nodejs-server-template'],
-            filter: function (val) {
-                return val;
-            }
+            choices: ['Angular-web-template', 'Nodejs-server-template']
         }
     ];
     return inquirer.prompt(questions);
@@ -52,7 +57,7 @@ const createProject = async (projectName, projectType) => {
         await excNPM();
         return path;
     } else if (projectType === 'Nodejs-server-template') {
-        return;
+        return '';
     }
 };
 
