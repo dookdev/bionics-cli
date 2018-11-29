@@ -60,8 +60,10 @@ const fileProcessWeb = (projectName) => {
     return new Promise((resove, reject) => {
         shell.cp('-Rf', `${rootPath}/master/angular-web-template/*`, `${process.cwd()}/${projectName}`);
         shell.cp('-Rf', `${rootPath}/master/angular-web-template/.editorconfig`, `${process.cwd()}/${projectName}`);
-        shell.cp('-Rf', `${rootPath}/master/angular-web-template/.gitignore`, `${process.cwd()}/${projectName}`);
         shell.cd(`${process.cwd()}/${projectName}`);
+        const filePath = `${process.cwd()}/.gitignore`;
+        shell.touch(filePath);
+        shell.cp('-Rf', `${rootPath}/master/tmp/gitignore.txt`, `${process.cwd()}/${projectName}`, `${process.cwd()}/${projectName}/.gitignore`);
         shell.sed('-i', 'angular-web', projectName, 'package.json');
         resove();
     });
