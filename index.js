@@ -79,12 +79,12 @@ const excGit = () => {
                 shell.exit(1);
                 reject();
             } else {
-                if (shell.exec('git commit -m "Auto-commit"').code !== 0) {
+                if (shell.exec('git commit -m "auto-commit"').code !== 0) {
                     log(chalk.red('Error: Git commit failed'));
                     shell.exit(1);
                     reject();
                 } else {
-                    log(chalk.green('Success: git init and Auto-commit'));
+                    log(chalk.green('Success: git init and auto-commit'));
                     resove();
                 }
             }
@@ -114,18 +114,14 @@ const excNPM = () => {
 };
 
 const success = path => {
-    log(chalk.green(`Done! created Project at ${path}`));
+    log(chalk.green(`Done! created project at ${path}`));
 };
 
 const run = async () => {
-    // show script introduction
     init();
-    // ask questions
     const answers = await askQuestions();
     const { PROJECTNAME, PROJECTTYPE } = answers;
-    // create the file
     const path = await createProject(PROJECTNAME, PROJECTTYPE);
-    // show success message
     success(path);
 };
 
