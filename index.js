@@ -93,7 +93,7 @@ const excGit = () => {
 };
 
 const excNPM = () => {
-    log(chalk.blue('Wainting...: npm install package.'));
+    log(chalk.blue('Waiting...: npm install package'));
     return new Promise((resove, reject) => {
         if (shell.exec('npm i').code !== 0) {
             log(chalk.red('Error: npm i failed'));
