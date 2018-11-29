@@ -63,7 +63,7 @@ const fileProcessWeb = (projectName) => {
         shell.cd(`${process.cwd()}/${projectName}`);
         const filePath = `${process.cwd()}/.gitignore`;
         shell.touch(filePath);
-        shell.cp('-Rf', `${rootPath}/master/tmp/gitignore.txt`, `${process.cwd()}/${projectName}`, `${process.cwd()}/${projectName}/.gitignore`);
+        shell.cp('-Rf', `${rootPath}/master/tmp/gitignore.txt`, `${process.cwd()}/.gitignore`);
         shell.sed('-i', 'angular-web', projectName, 'package.json');
         resove();
     });
